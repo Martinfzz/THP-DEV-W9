@@ -35,26 +35,24 @@ class ArticlesController < ApplicationController
   # PATCH/PUT /articles/1 or /articles/1.json
   def update
     if set_user
-      respond_to do |format|
-        if @article.update(article_params)
-          format.html { redirect_to @article, notice: "Article was successfully updated." }
-          format.json { render :show, status: :ok, location: @article }
-        else
-          format.html { render :edit, status: :unprocessable_entity }
-          format.json { render json: @article.errors, status: :unprocessable_entity }
-        end
-      end
+      @article = Article.find(params[:id])
+      @article.update(title: params[:title], content: params[:content], private: params[:private], user_id: current_user.id)
+      render json: @article
+    else
+      render json: { message: "You do not own this article"}
     end
+    
   end
 
   # DELETE /articles/1 or /articles/1.json
   def destroy
     if set_user
+      @article = Article.find(params[:id])
       @article.destroy
-      respond_to do |format|
-        format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
-        format.json { head :no_content }
-      end
+      @articles = Article.where(user_id: current_user.id) + Article.where(private: false)
+      render json: @articles
+    else
+      render json: { message: "You do not own this article"}
     end
   end
 
