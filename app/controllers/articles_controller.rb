@@ -1,41 +1,70 @@
 class ArticlesController < ApplicationController
-  before_action :set_article, only: [:show, :update, :destroy]
+  before_action :set_article, only: %i[ show edit update destroy ]
+  before_action :authenticate_user!, except: [:index, :show]
+  before_action :set_user, only: [:edit, :update, :destroy]
 
-  # GET /articles
+  # GET /articles or /articles.json
   def index
     @articles = Article.all
+    @user = helpers.current_user
 
-    render json: @articles
   end
 
-  # GET /articles/1
+  # GET /articles/1 or /articles/1.json
   def show
-    render json: @article
   end
 
-  # POST /articles
+  # GET /articles/new
+  def new
+    @article = Article.new
+    @user = helpers.current_user
+  end
+
+  # GET /articles/1/edit
+  def edit
+    @user = helpers.current_user
+  end
+
+  # POST /articles or /articles.json
   def create
     @article = Article.new(article_params)
+    @user = helpers.current_user
 
-    if @article.save
-      render json: @article, status: :created, location: @article
-    else
-      render json: @article.errors, status: :unprocessable_entity
+    respond_to do |format|
+      if @article.save
+        format.html { redirect_to @article, notice: "Article was successfully created." }
+        format.json { render :show, status: :created, location: @article }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @article.errors, status: :unprocessable_entity }
+      end
     end
   end
 
-  # PATCH/PUT /articles/1
+  # PATCH/PUT /articles/1 or /articles/1.json
   def update
-    if @article.update(article_params)
-      render json: @article
-    else
-      render json: @article.errors, status: :unprocessable_entity
+    if set_user
+      respond_to do |format|
+        if @article.update(article_params)
+          format.html { redirect_to @article, notice: "Article was successfully updated." }
+          format.json { render :show, status: :ok, location: @article }
+        else
+          format.html { render :edit, status: :unprocessable_entity }
+          format.json { render json: @article.errors, status: :unprocessable_entity }
+        end
+      end
     end
   end
 
-  # DELETE /articles/1
+  # DELETE /articles/1 or /articles/1.json
   def destroy
-    @article.destroy
+    if set_user
+      @article.destroy
+      respond_to do |format|
+        format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
+        format.json { head :no_content }
+      end
+    end
   end
 
   private
@@ -46,6 +75,10 @@ class ArticlesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def article_params
-      params.require(:article).permit(:title, :content)
+      params.require(:article).permit(:title, :content, :user_id, :private)
+    end
+
+    def set_user
+      current_user.id == Article.find(params[:id]).user_id
     end
 end
