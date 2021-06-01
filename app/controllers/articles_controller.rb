@@ -29,7 +29,7 @@ class ArticlesController < ApplicationController
 
   # POST /articles or /articles.json
   def create
-    @article = Article.create(article_params)
+    @article = Article.create(title: params[:title], content: params[:content], private: params[:private], user_id: current_user.id)
     render json: @article
   end
 
@@ -67,7 +67,7 @@ class ArticlesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def article_params
-      params.require(:article).permit(:title, :content, :user_id, :private)
+      params.require(:article).permit(:title, :content, :private)
     end
 
     def set_user
