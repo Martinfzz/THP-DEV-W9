@@ -238,6 +238,7 @@ DEPENDENCIES
   byebug
   devise
   devise-jwt
+  dotenv
   dotenv-rails
   factory_bot_rails
   faker

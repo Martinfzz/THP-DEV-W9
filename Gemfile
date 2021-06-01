@@ -43,6 +43,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'rubocop', '~> 0.57.2'
 gem 'faker'
 gem 'table_print'
+gem 'dotenv'
 gem 'dotenv-rails'
 gem 'devise'
 gem 'devise-jwt'
