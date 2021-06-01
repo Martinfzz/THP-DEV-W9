@@ -5,8 +5,7 @@ class ArticlesController < ApplicationController
 
   # GET /articles or /articles.json
   def index
-    @articles = Article.all
-    @user = helpers.current_user
+    @articles = Article.where(user_id: current_user.id) + Article.where(private: false)
     render json: @articles
   end
 
