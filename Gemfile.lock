@@ -208,6 +208,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap (>= 1.4.4)
   byebug
+  devise
   devise-jwt
   dotenv-rails
   faker
