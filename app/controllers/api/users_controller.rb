@@ -1,9 +1,14 @@
 class Api::UsersController < Api::BaseController
 
-  before_action :find_user, only: %w[show]
+  before_action :find_user, only: %w[show, index]
+  
+  def index
+    render_jsonapi_response(@user)
+  end
 
   def show
-    render_jsonapi_response(@user)
+    @users = User.all
+    render_jsonapi_response(@users)
   end
 
   private

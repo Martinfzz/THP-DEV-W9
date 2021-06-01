@@ -7,11 +7,13 @@ class ArticlesController < ApplicationController
   def index
     @articles = Article.all
     @user = helpers.current_user
-
+    render json: @articles
   end
 
   # GET /articles/1 or /articles/1.json
   def show
+    @articles = Article.all
+    render json: @articles
   end
 
   # GET /articles/new
@@ -27,18 +29,8 @@ class ArticlesController < ApplicationController
 
   # POST /articles or /articles.json
   def create
-    @article = Article.new(article_params)
-    @user = helpers.current_user
-
-    respond_to do |format|
-      if @article.save
-        format.html { redirect_to @article, notice: "Article was successfully created." }
-        format.json { render :show, status: :created, location: @article }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @article.errors, status: :unprocessable_entity }
-      end
-    end
+    @article = Article.create(article_params)
+    render json: @article
   end
 
   # PATCH/PUT /articles/1 or /articles/1.json
