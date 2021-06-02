@@ -5,13 +5,13 @@ class ArticlesController < ApplicationController
 
   # GET /articles or /articles.json
   def index
-    @articles = Article.where(user_id: current_user.id) + Article.where(private: false)
+    @articles = Article.where(user_id: current_user) + Article.where(private: false)
     render json: @articles
   end
 
   # GET /articles/1 or /articles/1.json
   def show
-    @articles = Article.all
+    @articles = Article.find(params[:id])
     render json: @articles
   end
 
